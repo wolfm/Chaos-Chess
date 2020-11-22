@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3881161106873004528}
   - component: {fileID: 3881161106873004543}
+  - component: {fileID: 3875121082249702276}
+  - component: {fileID: -1934073242395337814}
   m_Layer: 0
   m_Name: BlackKnight
   m_TagString: Untagged
@@ -81,3 +83,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &3875121082249702276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3881161106873004542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b9b08bec4708b249a842dd5c8cf12a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isWhite: 0
+--- !u!114 &-1934073242395337814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3881161106873004542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b93e5b16df923f40add690869bc8844, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

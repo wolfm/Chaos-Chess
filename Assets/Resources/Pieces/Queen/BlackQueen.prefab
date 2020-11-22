@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6029691513682697097}
   - component: {fileID: 6029691513682697094}
+  - component: {fileID: 4937784014364748783}
+  - component: {fileID: 4787212444122319740}
   m_Layer: 0
   m_Name: BlackQueen
   m_TagString: Untagged
@@ -81,3 +83,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &4937784014364748783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6029691513682697095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b9b08bec4708b249a842dd5c8cf12a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isWhite: 0
+--- !u!114 &4787212444122319740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6029691513682697095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e90fbcc51ba7af34894b5000e81b798c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -4,12 +4,39 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
+    
+    public GameController game;
+    public Board board;
     public int row;
     public int col;
 
-    public Board board;
-    private GameObject piece;
-    public GameObject Piece
+    public Color normalColor;
+
+    private bool highlighted = false;
+    public bool Highlighted
+    {
+        get
+        {
+            return highlighted;
+        }
+        
+        set
+        {
+            if (value == true)
+                GetComponent<SpriteRenderer>().color = highlightColor;
+            else
+            {
+                GetComponent<SpriteRenderer>().color = normalColor;
+            }
+        }
+    }
+
+    public Color highlightColor;
+
+    [SerializeField]
+    private Piece piece;
+    
+    public Piece Piece
     {
         get
         {
@@ -18,37 +45,38 @@ public class Tile : MonoBehaviour
 
         set
         {
-            value.transform.position = this.transform.position;
+
+            if (value)
+            {
+                if(value.Tile) value.Tile.Piece = null;
+                value.transform.position = this.transform.position;
+            }
             piece = value;
         }
     }
 
+    void highlight()
+    {
+
+    }
+
     void OnMouseDown()
     {
-        // If it's your turn
-        switch (board.state)
+        Debug.Log("Mouse down");
+        if(piece)
         {
-            case Board.GameState.OTHERS_TURN:
-                break;
-
-            case Board.GameState.CHOOSE_PIECE:
-                if (piece)
-                {
-                    board.state = Board.GameState.HIGHLIGHT_MOVES;
-                }
-                else
-                {
-                    Debug.Log("no piece");
-                }
-                break;
-
-            case Board.GameState.HIGHLIGHT_MOVES:
-                break;
+            Debug.Log("Piece here");
+            board.HighlightTargets(piece.GetComponent<Targeter>(), this);
         }
+    }
 
-        if(board.state != Board.GameState.OTHERS_TURN)
-        {
-            
-        }
+    private void Awake()
+    {
+        game = FindObjectOfType<GameController>();
+    }
+
+    private void OnValidate()
+    {
+        Piece = piece;
     }
 }

@@ -95,9 +95,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cf1eb7b4a26f3846b7ee05d86a5ae0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  game: {fileID: 0}
+  board: {fileID: 0}
   row: 0
   col: 0
-  board: {fileID: 0}
+  normalColor: {r: 0, g: 0, b: 0, a: 0}
+  highlightColor: {r: 0.4481132, g: 1, b: 0.6635282, a: 1}
 --- !u!61 &3204883592575496958
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -122,5 +125,5 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.01, y: 0.01}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0

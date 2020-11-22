@@ -3,7 +3,7 @@
     "m_SelectedPackage": {
         "deviceId": "5035523341583398",
         "name": "com.DefaultCompany.com.unity.template.mobile2D",
-        "processId": 19602,
+        "processId": 28919,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -25,6 +25,12 @@
             "name": "com.DefaultCompany.com.unity.template.mobile2D",
             "processId": 19602,
             "exited": false
+        },
+        {
+            "deviceId": "5035523341583398",
+            "name": "com.DefaultCompany.com.unity.template.mobile2D",
+            "processId": 28919,
+            "exited": false
         }
     ],
     "m_Tags": {
@@ -35,7 +41,7 @@
             },
             {
                 "m_Name": "No Filter",
-                "m_Selected": true
+                "m_Selected": false
             },
             {
                 "m_Name": "",
@@ -51,7 +57,7 @@
             },
             {
                 "m_Name": "Unity",
-                "m_Selected": false
+                "m_Selected": true
             },
             {
                 "m_Name": "CRASH",

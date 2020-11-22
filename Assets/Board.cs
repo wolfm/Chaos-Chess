@@ -4,22 +4,27 @@ using UnityEngine;
 
 public class Board : MonoBehaviour {
 
-    public enum GameState {OTHERS_TURN, CHOOSE_PIECE, HIGHLIGHT_MOVES, };
-
-    public GameState state;
-
     //public Material boardMaterial;
     public GameObject referenceTile;
     public int rows = 8;
     public int cols = 8;
     public Color[] tileColors = { Color.black, Color.white };
 
+    [HideInInspector]
     public float scaleFactor;
 
-    Tile[,] tiles;
+    [HideInInspector]
+    public Tile[,] tiles;
+
+    private List<Vector2Int> highlightedTargets;
+
+    private void Awake()
+    {
+        highlightedTargets = new List<Vector2Int>();
+    }
 
     // Draw the board, centered on the transform
-    void DrawBoard()
+    public void DrawBoard()
     {
         // Set up reference tile as a quad with input material
         //GameObject referenceTile = GameObject.CreatePrimitive(PrimitiveType.Quad);
@@ -33,12 +38,13 @@ public class Board : MonoBehaviour {
             for (int c = 0; c < cols; ++c)  
             {
                 GameObject tile = Instantiate(referenceTile, transform);
-                tile.GetComponent<Renderer>().material.color = tileColors[(r + c) % 2];
+                tile.GetComponent<SpriteRenderer>().color = tileColors[(r + c) % 2];
 
                 tiles[r, c] = tile.GetComponent<Tile>();
                 tiles[r, c].row = r;
                 tiles[r, c].col = c;
                 tiles[r, c].board = this;
+                tiles[r, c].normalColor = tileColors[(r + c) % 2];
 
                 float posX = (c + 0.5f) - (cols / 2.0f);
                 float posY = (r + 0.5f) - (rows / 2.0f);
@@ -63,71 +69,36 @@ public class Board : MonoBehaviour {
         Destroy(referenceTile);
     }
 
-	// Use this for initialization
-	void Start () {
-        DrawBoard();
-
-        UnityEngine.Object pawnPrefab = Resources.Load("Pieces/Pawn/WhitePawn");
-
-        // * Default Chess Setup
-
-        // Pawns
-        for(int i = 0; i < cols; ++i)
-        {
-            spawnPiece(1, i, "White", "Pawn");
-            //tiles[1, i].Piece = (GameObject) Instantiate(Resources.Load("Pieces/Pawn/WhitePawn"));
-            spawnPiece(rows - 2, i, "Black", "Pawn");
-            //tiles[rows-2, i].Piece = (GameObject)Instantiate(Resources.Load("Pieces/Pawn/BlackPawn"));
-        }
-
-        // White Pieces
-        spawnPiece(0, 0, "White", "Rook");
-        // tiles[0, 0].Piece = (GameObject)Instantiate(Resources.Load("Pieces/Rook/WhiteRook"));
-        spawnPiece(0, 1, "White", "Knight");
-        // tiles[0, 1].Piece = (GameObject)Instantiate(Resources.Load("Pieces/Knight/WhiteKnight"));
-        spawnPiece(0, 2, "White", "Bishop");
-        // tiles[0, 2].Piece = (GameObject)Instantiate(Resources.Load("Pieces/Bishop/WhiteBishop"));
-        spawnPiece(0, 3, "White", "Queen");
-        // tiles[0, 3].Piece = (GameObject)Instantiate(Resources.Load("Pieces/Queen/WhiteQueen"));
-        spawnPiece(0, 4, "White", "King");
-        // tiles[0, 4].Piece = (GameObject)Instantiate(Resources.Load("Pieces/King/WhiteKing"));
-        spawnPiece(0, 5, "White", "Bishop");
-        // tiles[0, 5].Piece = (GameObject)Instantiate(Resources.Load("Pieces/Bishop/WhiteBishop"));
-        spawnPiece(0, 6, "White", "Knight");
-        // tiles[0, 6].Piece = (GameObject)Instantiate(Resources.Load("Pieces/Knight/WhiteKnight"));
-        spawnPiece(0, 7, "White", "Rook");
-        // tiles[0, 7].Piece = (GameObject)Instantiate(Resources.Load("Pieces/Rook/WhiteRook"));
-
-        // Black Pieces
-        spawnPiece(rows-1, 0, "Black", "Rook");
-        // tiles[rows - 1, 0].Piece = (GameObject)Instantiate(Resources.Load("Pieces/Rook/BlackRook"));
-        spawnPiece(rows - 1, 1, "Black", "Knight");
-        // tiles[rows - 1, 1].Piece = (GameObject)Instantiate(Resources.Load("Pieces/Knight/BlackKnight"));
-        spawnPiece(rows - 1, 2, "Black", "Bishop");
-        // tiles[rows - 1, 2].Piece = (GameObject)Instantiate(Resources.Load("Pieces/Bishop/BlackBishop"));
-        spawnPiece(rows - 1, 3, "Black", "Queen");
-        // tiles[rows - 1, 3].Piece = (GameObject)Instantiate(Resources.Load("Pieces/Queen/BlackQueen"));
-        spawnPiece(rows - 1, 4, "Black", "King");
-        // tiles[rows - 1, 4].Piece = (GameObject)Instantiate(Resources.Load("Pieces/King/BlackKing"));
-        spawnPiece(rows - 1, 5, "Black", "Bishop");
-        // tiles[rows - 1, 5].Piece = (GameObject)Instantiate(Resources.Load("Pieces/Bishop/BlackBishop"));
-        spawnPiece(rows - 1, 6, "Black", "Knight");
-        // tiles[rows - 1, 6].Piece = (GameObject)Instantiate(Resources.Load("Pieces/Knight/BlackKnight"));
-        spawnPiece(rows - 1, 7, "Black", "Rook");
-        // tiles[rows - 1, 7].Piece = (GameObject)Instantiate(Resources.Load("Pieces/Rook/BlackRook"));
-    }
-
-    void spawnPiece(int r, int c, string color, string piece)
+    public void spawnPiece(int r, int c, string color, string piece)
     {
         string location = "Pieces/" + piece + "/" + color + piece;
-        Debug.Log("Attempting to load '" + location + "'");
-        tiles[r, c].Piece = (GameObject)Instantiate(Resources.Load(location));
+        Piece newpiece = ((GameObject)Instantiate(Resources.Load(location))).GetComponent<Piece>();
+        tiles[r, c].Piece = newpiece;
         tiles[r, c].Piece.transform.localScale *= scaleFactor;
+        tiles[r, c].Piece.isWhite = (color == "White");
+        tiles[r, c].Piece.Tile = tiles[r, c];
     }
 
-    // Update is called once per frame
-    void Update () {
-		
-	}
+    public void HighlightTargets(Targeter targeter, Tile tile)
+    {
+        Debug.Log("HighlightTargets Called");
 
+        // Un-highlight already highlighted targets
+        foreach (Vector2Int target in highlightedTargets)
+        {
+            tiles[target.y, target.x].Highlighted = false;
+        }
+
+        // Get the next array of targets
+        List<Vector2Int> targets = targeter.GetTargets(tile.row, tile.col, tiles);
+
+        //Highlight the next wave of targets
+        foreach(Vector2Int target in targets)
+        {
+            tiles[target.y, target.x].Highlighted = true;
+        }
+
+        // Set the highlighted targets list to be the new highlighted targets list
+        highlightedTargets = targets;
+    }
 }

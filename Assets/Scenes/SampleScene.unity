@@ -214,6 +214,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1561185988}
   - component: {fileID: 1561185987}
+  - component: {fileID: 1561185989}
   m_Layer: 0
   m_Name: Board
   m_TagString: Untagged
@@ -233,14 +234,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 015447eeaa4496448bd8f77acca2d2d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  state: 0
   referenceTile: {fileID: 8268522813483452017, guid: a271a57871aca664681ae51b7a655aa2,
     type: 3}
-  rows: 11
-  cols: 11
+  rows: 8
+  cols: 8
   tileColors:
   - {r: 0.36601102, g: 0.4433962, b: 0.43479785, a: 1}
   - {r: 0.6539694, g: 0.8301887, b: 0.8301887, a: 1}
+  scaleFactor: 0
 --- !u!4 &1561185988
 Transform:
   m_ObjectHideFlags: 0
@@ -255,3 +256,16 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1561185989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1561185986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe86c43b5d20b940bffc27f9a110b08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  state: 0
