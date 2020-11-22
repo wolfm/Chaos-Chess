@@ -100,7 +100,9 @@ MonoBehaviour:
   row: 0
   col: 0
   normalColor: {r: 0, g: 0, b: 0, a: 0}
-  highlightColor: {r: 0.4481132, g: 1, b: 0.6635282, a: 1}
+  targetedColor: {r: 0.56376827, g: 0.9716981, b: 0.73007816, a: 1}
+  selectedColor: {r: 0.28025985, g: 0.60423946, b: 0.8867924, a: 1}
+  piece: {fileID: 0}
 --- !u!61 &3204883592575496958
 BoxCollider2D:
   m_ObjectHideFlags: 0

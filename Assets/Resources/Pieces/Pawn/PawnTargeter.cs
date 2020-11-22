@@ -4,15 +4,19 @@ using UnityEngine;
 
 public class PawnTargeter : Targeter
 {
-    public override List<Vector2Int> GetTargets(int piece_row, int piece_col, Tile[,] tiles)
+    public override HashSet<Vector2Int> GetTargets(int piece_row, int piece_col, Tile[,] tiles)
     {
         int height = tiles.GetLength(0);
         int width = tiles.GetLength(1);
 
         // Direction is up if player one, down if player 2
+        if (tiles == null) Debug.Log("tiles is null");
+        if (tiles[piece_row,piece_col] == null) Debug.Log("tiles[piece_row,piece_col] is null");
+        if (tiles[piece_row, piece_col].Piece == null) Debug.Log("tiles[piece_row,piece_col].Piece is null");
+
         int dir = tiles[piece_row, piece_col].Piece.belongsToPlayerOne() ? 1 : -1;
 
-        List<Vector2Int> targets = new List<Vector2Int>();
+        HashSet<Vector2Int> targets = new HashSet<Vector2Int>();
         Vector2Int[] directions = new Vector2Int[2]
         {
             new Vector2Int(dir, 1),
@@ -38,7 +42,7 @@ public class PawnTargeter : Targeter
             // Add this tile to targets if it's on the board a there's an enemy piece on it
             if (r >= 0 && c >= 0 && r < height && c < width &&
                 tiles[r, c].Piece
-                && tiles[r, c].Piece.isWhite != tiles[piece_row, piece_col].Piece.isWhite)
+                && tiles[r, c].Piece.team != tiles[piece_row, piece_col].Piece.team)
             {
                 targets.Add(new Vector2Int(c, r));
             }

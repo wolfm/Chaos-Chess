@@ -2,17 +2,35 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum GameState { OTHERS_TURN, CHOOSE_PIECE, HIGHLIGHT_MOVES, };
+public enum GameState { CHOOSE_PIECE, HIGHLIGHT_MOVES, BETWEEN_TURNS };
+public enum Team { WHITE, BLACK };
 
 public class GameController : MonoBehaviour
 {
 
-    [HideInInspector]
-    public GameState state;
+    public GameState state = GameState.CHOOSE_PIECE;
+    public Team playerOneTeam = Team.WHITE;
+    public Team currentTeam = Team.WHITE;
 
     private Board board;
 
-    public bool playerOneWhite = true;
+    public void endTurn()
+    {
+        // * End this turn
+        state = GameState.BETWEEN_TURNS;
+        board.UnhighlightTiles();
+
+        board.CalculateThreatened();
+
+
+        // * Start next turn
+
+        // Switch current team
+        currentTeam = currentTeam == Team.WHITE ? Team.BLACK : Team.WHITE;
+
+        state = GameState.CHOOSE_PIECE;
+    }
+
 
     // Start is called before the first frame update
     void Start()
@@ -24,28 +42,28 @@ public class GameController : MonoBehaviour
         // Pawns
         for (int i = 0; i < board.cols; ++i)
         {
-            board.spawnPiece(1, i, "White", "Pawn");
-            board.spawnPiece(board.rows - 2, i, "Black", "Pawn");
+            board.spawnPiece(1, i, Team.WHITE, "Pawn");
+            board.spawnPiece(board.rows - 2, i, Team.BLACK, "Pawn");
         }
 
         // White Pieces
-        board.spawnPiece(0, 0, "White", "Rook");
-        board.spawnPiece(0, 1, "White", "Knight");
-        board.spawnPiece(0, 2, "White", "Bishop");
-        board.spawnPiece(0, 3, "White", "Queen");
-        board.spawnPiece(0, 4, "White", "King");
-        board.spawnPiece(0, 5, "White", "Bishop");
-        board.spawnPiece(0, 6, "White", "Knight");
-        board.spawnPiece(0, 7, "White", "Rook");
+        board.spawnPiece(0, 0, Team.WHITE, "Rook");
+        board.spawnPiece(0, 1, Team.WHITE, "Knight");
+        board.spawnPiece(0, 2, Team.WHITE, "Bishop");
+        board.spawnPiece(0, 3, Team.WHITE, "Queen");
+        board.spawnPiece(0, 4, Team.WHITE, "King");
+        board.spawnPiece(0, 5, Team.WHITE, "Bishop");
+        board.spawnPiece(0, 6, Team.WHITE, "Knight");
+        board.spawnPiece(0, 7, Team.WHITE, "Rook");
 
         // Black Pieces
-        board.spawnPiece(board.rows - 1, 0, "Black", "Rook");
-        board.spawnPiece(board.rows - 1, 1, "Black", "Knight");
-        board.spawnPiece(board.rows - 1, 2, "Black", "Bishop");
-        board.spawnPiece(board.rows - 1, 3, "Black", "Queen");
-        board.spawnPiece(board.rows - 1, 4, "Black", "King");
-        board.spawnPiece(board.rows - 1, 5, "Black", "Bishop");
-        board.spawnPiece(board.rows - 1, 6, "Black", "Knight");
-        board.spawnPiece(board.rows - 1, 7, "Black", "Rook");
+        board.spawnPiece(board.rows - 1, 0, Team.BLACK, "Rook");
+        board.spawnPiece(board.rows - 1, 1, Team.BLACK, "Knight");
+        board.spawnPiece(board.rows - 1, 2, Team.BLACK, "Bishop");
+        board.spawnPiece(board.rows - 1, 3, Team.BLACK, "Queen");
+        board.spawnPiece(board.rows - 1, 4, Team.BLACK, "King");
+        board.spawnPiece(board.rows - 1, 5, Team.BLACK, "Bishop");
+        board.spawnPiece(board.rows - 1, 6, Team.BLACK, "Knight");
+        board.spawnPiece(board.rows - 1, 7, Team.BLACK, "Rook");
     }
 }

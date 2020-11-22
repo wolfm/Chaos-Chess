@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Piece : MonoBehaviour
 {
-    private Tile tile;
+    public Tile tile;
+    public Targeter targeter;
 
     public Tile Tile
     {
@@ -12,20 +13,26 @@ public class Piece : MonoBehaviour
         {
             return tile;
         }
-        // Preserve the invariant of one-to-one mapping pieces to tiles
         set
         {
-            if(tile) tile.Piece = null;
-            value.Piece = this;
             tile = value;
-
         }
     }
 
-    public bool isWhite;
+    public Team team;
 
     public bool belongsToPlayerOne()
     {
-        return !(tile.game.playerOneWhite ^ isWhite);
+        return tile.game.playerOneTeam == team;
+    }
+
+    public HashSet<Vector2Int> GetTargets()
+    {
+        return targeter.GetTargets(tile.row, tile.col, tile.board.tiles);
+    }
+
+    private void Awake()
+    {
+        targeter = GetComponent<Targeter>();
     }
 }

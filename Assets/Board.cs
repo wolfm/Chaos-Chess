@@ -16,11 +16,22 @@ public class Board : MonoBehaviour {
     [HideInInspector]
     public Tile[,] tiles;
 
-    private List<Vector2Int> highlightedTargets;
+    private HashSet<Vector2Int> highlightedTargets;
+    public Tile selectedTile;
+
+    public HashSet<Vector2Int> threatened;
+    private List<Piece> whitePieces;
+    private List<Piece> blackPieces;
+
+    public GameController game;
 
     private void Awake()
     {
-        highlightedTargets = new List<Vector2Int>();
+        highlightedTargets = new HashSet<Vector2Int>();
+        game = FindObjectOfType<GameController>();
+        whitePieces = new List<Piece>();
+        blackPieces = new List<Piece>();
+        threatened = new HashSet<Vector2Int>();
     }
 
     // Draw the board, centered on the transform
@@ -65,40 +76,65 @@ public class Board : MonoBehaviour {
         scaleFactor = (shortestScreenDim) / (numTilesInDim  + 2);
 
         this.transform.localScale = new Vector3(scaleFactor, scaleFactor, 1.0f);
-
-        Destroy(referenceTile);
     }
 
-    public void spawnPiece(int r, int c, string color, string piece)
+    public void spawnPiece(int r, int c, Team team, string piece)
     {
-        string location = "Pieces/" + piece + "/" + color + piece;
+        string teamColor = team == Team.WHITE ? "White" : "Black";
+        string location = "Pieces/" + piece + "/" + teamColor + piece;
         Piece newpiece = ((GameObject)Instantiate(Resources.Load(location))).GetComponent<Piece>();
+
+        if (team == Team.WHITE) whitePieces.Add(newpiece);
+        else blackPieces.Add(newpiece);
+
         tiles[r, c].Piece = newpiece;
         tiles[r, c].Piece.transform.localScale *= scaleFactor;
-        tiles[r, c].Piece.isWhite = (color == "White");
+        tiles[r, c].Piece.team = team;
         tiles[r, c].Piece.Tile = tiles[r, c];
     }
 
-    public void HighlightTargets(Targeter targeter, Tile tile)
+    public void HighlightTiles(Piece piece)
     {
-        Debug.Log("HighlightTargets Called");
+        UnhighlightTiles();
 
-        // Un-highlight already highlighted targets
-        foreach (Vector2Int target in highlightedTargets)
-        {
-            tiles[target.y, target.x].Highlighted = false;
-        }
+        // Select newly selected tile
+        piece.tile.State = TileState.SELECTED;
+        selectedTile = piece.tile;
 
         // Get the next array of targets
-        List<Vector2Int> targets = targeter.GetTargets(tile.row, tile.col, tiles);
+        HashSet<Vector2Int> targets = piece.GetTargets();
 
         //Highlight the next wave of targets
-        foreach(Vector2Int target in targets)
+        foreach (Vector2Int target in targets)
         {
-            tiles[target.y, target.x].Highlighted = true;
+            tiles[target.y, target.x].State = TileState.TARGETED;
         }
 
         // Set the highlighted targets list to be the new highlighted targets list
         highlightedTargets = targets;
+    }
+
+    public void UnhighlightTiles()
+    {
+        // Un-highlight already highlighted targets
+        foreach (Vector2Int target in highlightedTargets)
+        {
+            tiles[target.y, target.x].State = TileState.NONE;
+        }
+
+        // Unselect previous tile
+        if (selectedTile) selectedTile.State = TileState.NONE;
+    }
+
+    public void CalculateThreatened()
+    {
+        List<Piece> pieces = game.currentTeam == Team.WHITE ? blackPieces : whitePieces;
+
+        threatened.Clear();
+
+        foreach(Piece piece in pieces)
+        {
+            threatened.UnionWith(piece.GetTargets());
+        }
     }
 }

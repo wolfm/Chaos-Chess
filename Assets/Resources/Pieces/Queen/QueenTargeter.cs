@@ -5,12 +5,12 @@ using UnityEngine;
 public class QueenTargeter : Targeter
 {
 
-    public override List<Vector2Int> GetTargets(int piece_row, int piece_col, Tile[,] tiles)
+    public override HashSet<Vector2Int> GetTargets(int piece_row, int piece_col, Tile[,] tiles)
     {
         int height = tiles.GetLength(0);
         int width = tiles.GetLength(1);
 
-        List<Vector2Int> targets = new List<Vector2Int>();
+        HashSet<Vector2Int> targets = new HashSet<Vector2Int>();
         Vector2Int[] directions = new Vector2Int[8]
         {
 
@@ -38,7 +38,7 @@ public class QueenTargeter : Targeter
                 if (tiles[r, c].Piece)
                 {
                     // If the piece on this tile is the opposing player's, add it to the targets list before breaking
-                    if (tiles[r, c].Piece.isWhite != tiles[piece_row, piece_col].Piece.isWhite)
+                    if (tiles[r, c].Piece.team != tiles[piece_row, piece_col].Piece.team)
                     {
                         targets.Add(new Vector2Int(c, r));
                     }
