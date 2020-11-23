@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class KingTargeter : Targeter
 {
-    public override HashSet<Vector2Int> GetTargets(int piece_row, int piece_col, Tile[,] tiles)
+    public override HashSet<Vector2Int> GetTargets(int piece_row, int piece_col, Tile[,] tiles, bool hasMoved)
     {
+        HashSet<Vector2Int> targets = new HashSet<Vector2Int>();
+
         int height = tiles.GetLength(0);
         int width = tiles.GetLength(1);
 
-        HashSet<Vector2Int> targets = new HashSet<Vector2Int>();
         Vector2Int[] directions = new Vector2Int[8]
         {
             new Vector2Int(1, 0),

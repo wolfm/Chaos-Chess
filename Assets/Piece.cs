@@ -6,7 +6,8 @@ public class Piece : MonoBehaviour
 {
     public Tile tile;
     public Targeter targeter;
-    public bool isKingPiece = false;
+    public bool isKingPiece;
+    public bool hasMoved;
 
     private Piece destroyedInSimulation;
     private Tile movedFrom;
@@ -43,8 +44,15 @@ public class Piece : MonoBehaviour
             }
             Destroy(moveTarget.Piece.gameObject);
         }
-        // If on a tile, set its piece reference to null
-        if (tile) tile.Piece = null;
+        // If moving from a tile, set its piece reference to null
+        if (tile)
+        {
+            tile.Piece = null;
+
+            // Mark piece as moved
+            hasMoved = true;
+        }
+        
         
         // Set tile reference to the new tile
         tile = moveTarget;
@@ -54,6 +62,7 @@ public class Piece : MonoBehaviour
 
         // Visualy move the piece
         transform.position = moveTarget.transform.position;
+
     }
 
     public void simulateMove(Tile moveTarget)
@@ -118,11 +127,13 @@ public class Piece : MonoBehaviour
 
     public HashSet<Vector2Int> GetTargets()
     {
-        return targeter.GetTargets(tile.row, tile.col, tile.board.tiles);
+        return targeter.GetTargets(tile.row, tile.col, tile.board.tiles, hasMoved);
     }
 
     private void Awake()
     {
         targeter = GetComponent<Targeter>();
+        hasMoved = false;
+        isKingPiece = false;
     }
 }

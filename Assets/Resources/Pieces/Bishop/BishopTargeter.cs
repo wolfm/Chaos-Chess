@@ -5,7 +5,7 @@ using UnityEngine;
 public class BishopTargeter : Targeter
 {
 
-    public override HashSet<Vector2Int> GetTargets(int piece_row, int piece_col, Tile[,] tiles)
+    public override HashSet<Vector2Int> GetTargets(int piece_row, int piece_col, Tile[,] tiles, bool hasMoved)
     {
         int height = tiles.GetLength(0);
         int width = tiles.GetLength(1);
