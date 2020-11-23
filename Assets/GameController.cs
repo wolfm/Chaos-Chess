@@ -20,7 +20,7 @@ public class GameController : MonoBehaviour
         state = GameState.BETWEEN_TURNS;
         board.UnhighlightTiles();
 
-        board.CalculateThreatened();
+        board.CheckForCheck(currentTeam);
 
 
         // * Start next turn

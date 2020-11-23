@@ -6,6 +6,7 @@ public class Piece : MonoBehaviour
 {
     public Tile tile;
     public Targeter targeter;
+    public bool isKingPiece = false;
 
     public Tile Tile
     {

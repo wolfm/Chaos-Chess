@@ -23,6 +23,9 @@ public class Board : MonoBehaviour {
     private List<Piece> whitePieces;
     private List<Piece> blackPieces;
 
+    private Piece whiteKing;
+    private Piece blackKing;
+
     public GameController game;
 
     private void Awake()
@@ -84,13 +87,29 @@ public class Board : MonoBehaviour {
         string location = "Pieces/" + piece + "/" + teamColor + piece;
         Piece newpiece = ((GameObject)Instantiate(Resources.Load(location))).GetComponent<Piece>();
 
-        if (team == Team.WHITE) whitePieces.Add(newpiece);
-        else blackPieces.Add(newpiece);
+        if (team == Team.WHITE)
+        {
+            whitePieces.Add(newpiece);
+            if (piece == "King")
+            {
+                newpiece.isKingPiece = (piece == "King");
+                whiteKing = newpiece;
+            }
+        }
+        else
+        {
+            blackPieces.Add(newpiece);
+            if (piece == "King")
+            {
+                newpiece.isKingPiece = (piece == "King");
+                blackKing = newpiece;
+            }
+        }
 
         tiles[r, c].Piece = newpiece;
-        tiles[r, c].Piece.transform.localScale *= scaleFactor;
-        tiles[r, c].Piece.team = team;
-        tiles[r, c].Piece.Tile = tiles[r, c];
+        newpiece.transform.localScale *= scaleFactor;
+        newpiece.team = team;
+        newpiece.Tile = tiles[r, c];
     }
 
     public void HighlightTiles(Piece piece)
@@ -125,14 +144,26 @@ public class Board : MonoBehaviour {
         // Unselect previous tile
         if (selectedTile) selectedTile.State = TileState.NONE;
     }
-
-    public void CalculateThreatened()
+    public bool CheckForCheck(Team attackingTeam)
     {
-        List<Piece> pieces = game.currentTeam == Team.WHITE ? blackPieces : whitePieces;
 
+        Piece king = attackingTeam == Team.WHITE ? blackKing : whiteKing;
+        CalculateThreatened(attackingTeam == Team.WHITE ? whitePieces : blackPieces);
+
+        Debug.Log($"Checking king at {king.tile.row}, {king.tile.col} for check");
+
+        if (threatened.Contains(new Vector2Int(king.tile.col, king.tile.row)))
+        {
+            Debug.Log("Check");
+            return true;
+        }
+        return false;
+    }
+    public void CalculateThreatened(List<Piece> attackers)
+    {
         threatened.Clear();
 
-        foreach(Piece piece in pieces)
+        foreach(Piece piece in attackers)
         {
             threatened.UnionWith(piece.GetTargets());
         }
