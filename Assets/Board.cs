@@ -118,21 +118,40 @@ public class Board : MonoBehaviour {
     {
         UnhighlightTiles();
 
+        Piece friendlyKing = (game.currentTeam == Team.WHITE) ? whiteKing : blackKing;
+
         // Select newly selected tile
         piece.tile.State = TileState.SELECTED;
         selectedTile = piece.tile;
 
         // Get the next array of targets
-        HashSet<Vector2Int> targets = piece.GetMoves();
+        HashSet<Vector2Int> moves = piece.GetMoves();
 
         //Highlight the next wave of targets
-        foreach (Vector2Int target in targets)
+        foreach (Vector2Int move in moves)
         {
-            tiles[target.y, target.x].State = TileState.TARGETED;
+            // Check if this configuration would leave you in check
+
+            // Simulate move
+            // See if friendly king is in check
+            // Un-simulate move
+
+            // Simulate the move
+            piece.simulateMove(tiles[move.y, move.x]);
+
+            // If this move isn't check, we've found a valid non-check move! return true
+            if (!friendlyKing.IsChecked())
+            {
+                tiles[move.y, move.x].State = TileState.TARGETED;
+            }
+
+            // Move back to original position   
+            piece.rewindSimulatedMove();
+            
         }
 
         // Set the highlighted targets list to be the new highlighted targets list
-        highlightedTargets = targets;
+        highlightedTargets = moves;
     }
 
     public void UnhighlightTiles()
@@ -153,8 +172,6 @@ public class Board : MonoBehaviour {
     public bool CheckEndOfTurnConditions(Team attackingTeam)
     {
 
-        Debug.Log("Checking end of turn conditions");
-
         Piece king = (attackingTeam == Team.WHITE) ? blackKing : whiteKing;
         bool check = king.IsChecked();
 
@@ -165,6 +182,8 @@ public class Board : MonoBehaviour {
                 Debug.Log("Checkmate");
                 return true;
             }
+
+            Debug.Log("Check");
         }
         else
         {
@@ -214,24 +233,6 @@ public class Board : MonoBehaviour {
         return false;
     }
 
-    // Returns true if check
-    /*
-    private bool CheckForCheck(Team attackingTeam, int king_r, int king_c)
-    {
-
-        CalculateThreatened(attackingTeam == Team.WHITE ? whitePieces : blackPieces);
-
-        // Debug.Log($"Checking position {king_r}, {king_c} for check");
-
-        if (threatened.Contains(new Vector2Int(king_c, king_r)))
-        {
-            Debug.Log("Check");
-            return true;
-        }
-
-        return false;
-    }
-    */
     public void CalculateThreatened(List<Piece> attackers)
     {
         threatened.Clear();
