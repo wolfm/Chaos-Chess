@@ -6,9 +6,6 @@ public class KingTargeter : Targeter
 {
     public override HashSet<Vector2Int> GetTargets(int piece_row, int piece_col, Tile[,] tiles, bool hasMoved)
     {
-
-        Debug.Log($"Getting targets for king at {piece_row}, {piece_col}");
-
         HashSet<Vector2Int> targets = new HashSet<Vector2Int>();
         int height = tiles.GetLength(0);
         int width = tiles.GetLength(1);
@@ -62,11 +59,6 @@ public class KingTargeter : Targeter
         };
 
         // If king is unmoved and not in check
-
-        // TODO fix StackOverflow that occurs when uncommenting this condition
-        // Previous Bug: checks the black king,which involves checking the white king, which involves checking the black king, etc.
-        // Fix: check if it's this player's - the spots are never really "threatened" - so it doesn't matter if the opposing king
-        // can castle or not when we just want to find out if our own king is in check
         if (!hasMoved && !tiles[piece_row, piece_col].Piece.IsChecked())
         {
             Team attackingTeam = tiles[piece_row, piece_col].Piece.team == Team.WHITE ? Team.BLACK : Team.WHITE;

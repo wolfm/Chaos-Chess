@@ -30,7 +30,7 @@ public class Piece : MonoBehaviour
             return;
         }
 
-        if(tile) Debug.Log($"Moving {team} {type} at r{tile.row} c{tile.col} to r{moveTarget.row} c{moveTarget.col}");
+        // if(tile) Debug.Log($"Moving {team} {type} at r{tile.row} c{tile.col} to r{moveTarget.row} c{moveTarget.col}");
         
         if (moveTarget.Piece)
         {
@@ -67,13 +67,12 @@ public class Piece : MonoBehaviour
 
     public void simulateMove(Tile moveTarget)
     {
-        if (tile) Debug.Log($"Simulating move of {team} {type} at r{tile.row} c{tile.col} to r{moveTarget.row} c{moveTarget.col}");
+        // if (tile) Debug.Log($"Simulating move of {team} {type} at r{tile.row} c{tile.col} to r{moveTarget.row} c{moveTarget.col}");
 
         if (moveTarget.Piece)
         {
             // Kill the piece on this tile
             destroyedInSimulation = moveTarget.Piece;
-            Debug.Log("Simulated kill");
         }
         // If on a tile, set its piece reference to null
         if (tile) tile.Piece = null;
@@ -93,11 +92,11 @@ public class Piece : MonoBehaviour
         // If no active simulated move, do nothing
         if(!movedFrom)
         {
-            Debug.Log("rewindSimulatedMove() called with no stored simulated move");
+            // Debug.Log("rewindSimulatedMove() called with no stored simulated move");
             return;
         }
 
-        Debug.Log($"rewinding simulated move of {team} {type}");
+        // Debug.Log($"rewinding simulated move of {team} {type}");
 
         // If on a tile, set its piece reference to null
         if (destroyedInSimulation)
@@ -121,7 +120,7 @@ public class Piece : MonoBehaviour
 
     public bool IsChecked()
     {
-        Debug.Log($"Checking if {team} {type} is checked");
+        // Debug.Log($"Checking if {team} {type} is checked");
         Team attackingTeam = team == Team.WHITE ? Team.BLACK : Team.WHITE;
         return tile.IsChecked(attackingTeam);
     }

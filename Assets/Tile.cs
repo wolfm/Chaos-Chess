@@ -61,18 +61,17 @@ public class Tile : MonoBehaviour
     public bool IsChecked(Team attackingTeam)
     {
 
-        Debug.Log($"Checking position {row}, {col} for check");
+        // Debug.Log($"Checking position {row}, {col} for check");
 
         board.CalculateThreatened(attackingTeam == Team.WHITE ? board.whitePieces : board.blackPieces);
 
 
         if (board.threatened.Contains(new Vector2Int(col, row)))
         {
-            Debug.Log($"{row}, {col} Check");
+            //Debug.Log($"Check at {row}, {col}");
             return true;
         }
 
-        Debug.Log($"{row}, {col} Safe");
         return false;
     }
     void OnMouseDown()
