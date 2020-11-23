@@ -20,8 +20,8 @@ public class Board : MonoBehaviour {
     public Tile selectedTile;
 
     public HashSet<Vector2Int> threatened;
-    private List<Piece> whitePieces;
-    private List<Piece> blackPieces;
+    public List<Piece> whitePieces;
+    public List<Piece> blackPieces;
 
     private Piece whiteKing;
     private Piece blackKing;
@@ -106,10 +106,12 @@ public class Board : MonoBehaviour {
             }
         }
 
-        tiles[r, c].Piece = newpiece;
+        // tiles[r, c].Piece = newpiece;
         newpiece.transform.localScale *= scaleFactor;
         newpiece.team = team;
-        newpiece.Tile = tiles[r, c];
+        newpiece.type = piece;
+        // newpiece.Tile = tiles[r, c];
+        newpiece.moveToTile(tiles[r, c]);
     }
 
     public void HighlightTiles(Piece piece)
@@ -144,19 +146,98 @@ public class Board : MonoBehaviour {
         // Unselect previous tile
         if (selectedTile) selectedTile.State = TileState.NONE;
     }
-    public bool CheckForCheck(Team attackingTeam)
+
+    /*
+     * Returns true if game over
+     */
+    public bool CheckEndOfTurnConditions(Team attackingTeam)
+    {
+        Piece king = attackingTeam == Team.WHITE ? blackKing : whiteKing;
+        bool check = CheckForCheck(attackingTeam, king.tile.row, king.tile.col);
+
+        if (check)
+        {
+            if(!ValidNonCheckMoveExists(attackingTeam, king))
+            {
+                Debug.Log("Checkmate");
+                return true;
+            }
+        }
+        else
+        {
+            if(!ValidNonCheckMoveExists(attackingTeam, king))
+            {
+                Debug.Log("Stalemate");
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // Returns true if valid non-check move exists
+    private bool ValidNonCheckMoveExists(Team attackingTeam, Piece king)
+    {
+        List<Piece> defenders = (attackingTeam == Team.WHITE) ? blackPieces : whitePieces;
+
+        // For each defending piece (including the king)
+        foreach(Piece defender in defenders)
+        {
+            HashSet<Vector2Int> moves = defender.GetTargets();
+
+            // Save this piece's current position
+            Tile originalTile = tiles[defender.tile.row, defender.tile.col];
+
+            foreach (Vector2Int move in moves)
+            {
+                // Simulate the move
+                defender.simulateMove(tiles[move.y, move.x]);
+
+                // If this move isn't check, we've found a valid non-check move! return true
+                if (!CheckForCheck(attackingTeam, king.tile.row, king.tile.col))
+                {
+                    // Move back to original position
+                    defender.rewindSimulatedMove();
+
+                    /*
+                    defender.tile.Piece = null;
+                    defender.tile = tiles[orig_r, orig_c];
+                    defender.tile.Piece = defender;
+                    */
+
+                    return true;
+                }
+
+                // Move back to original position   
+                defender.rewindSimulatedMove();
+            }
+
+
+            /*
+            defender.tile.Piece = null;
+            defender.tile = tiles[orig_r, orig_c];
+            defender.tile.Piece = defender;
+            */
+        }
+
+        // We found no non-check moves. Return false
+        return false;
+    }
+
+    // Returns true if check
+    private bool CheckForCheck(Team attackingTeam, int king_r, int king_c)
     {
 
-        Piece king = attackingTeam == Team.WHITE ? blackKing : whiteKing;
         CalculateThreatened(attackingTeam == Team.WHITE ? whitePieces : blackPieces);
 
-        Debug.Log($"Checking king at {king.tile.row}, {king.tile.col} for check");
+        // Debug.Log($"Checking position {king_r}, {king_c} for check");
 
-        if (threatened.Contains(new Vector2Int(king.tile.col, king.tile.row)))
+        if (threatened.Contains(new Vector2Int(king_c, king_r)))
         {
             Debug.Log("Check");
             return true;
         }
+
         return false;
     }
     public void CalculateThreatened(List<Piece> attackers)

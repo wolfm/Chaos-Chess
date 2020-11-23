@@ -37,6 +37,10 @@ public class QueenTargeter : Targeter
                 // If the tile contains a piece, break out of the while loop
                 if (tiles[r, c].Piece)
                 {
+                    if (tiles == null) Debug.Log("tiles is null");
+                    if (tiles[piece_row, piece_col] == null) Debug.Log($"tiles[{piece_row},{piece_col}] is null");
+                    if (tiles[piece_row, piece_col].Piece == null) Debug.Log($"tiles[{piece_row},{piece_col}].Piece is null");
+
                     // If the piece on this tile is the opposing player's, add it to the targets list before breaking
                     if (tiles[r, c].Piece.team != tiles[piece_row, piece_col].Piece.team)
                     {

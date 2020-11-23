@@ -20,8 +20,9 @@ public class GameController : MonoBehaviour
         state = GameState.BETWEEN_TURNS;
         board.UnhighlightTiles();
 
-        board.CheckForCheck(currentTeam);
+        bool gameOver = board.CheckEndOfTurnConditions(currentTeam);
 
+        if (gameOver) Debug.Log("Game Over!");
 
         // * Start next turn
 

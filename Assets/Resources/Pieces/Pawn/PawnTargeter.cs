@@ -9,18 +9,18 @@ public class PawnTargeter : Targeter
         int height = tiles.GetLength(0);
         int width = tiles.GetLength(1);
 
-        // Direction is up if player one, down if player 2
         if (tiles == null) Debug.Log("tiles is null");
-        if (tiles[piece_row,piece_col] == null) Debug.Log("tiles[piece_row,piece_col] is null");
-        if (tiles[piece_row, piece_col].Piece == null) Debug.Log("tiles[piece_row,piece_col].Piece is null");
+        if (tiles[piece_row,piece_col] == null) Debug.Log($"tiles[{piece_row},{piece_col}] is null");
+        if (tiles[piece_row, piece_col].Piece == null) Debug.Log($"tiles[{piece_row},{piece_col}].Piece is null");
 
+        // Direction is up if player one, down if player 2
         int dir = tiles[piece_row, piece_col].Piece.belongsToPlayerOne() ? 1 : -1;
 
         HashSet<Vector2Int> targets = new HashSet<Vector2Int>();
         Vector2Int[] directions = new Vector2Int[2]
         {
-            new Vector2Int(dir, 1),
-            new Vector2Int(dir, -1)
+            new Vector2Int(1, dir),
+            new Vector2Int(-1, dir)
         };
 
         // Check for open space ahead

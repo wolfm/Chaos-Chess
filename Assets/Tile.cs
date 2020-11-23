@@ -54,10 +54,6 @@ public class Tile : MonoBehaviour
         set
         {
             // If setting this tile's piece to a piece, not null
-            if (value)
-            {
-                value.transform.position = this.transform.position;
-            }
             piece = value;
         }
     }
@@ -80,16 +76,15 @@ public class Tile : MonoBehaviour
                 }
                 else if(State == TileState.TARGETED)
                 {
-                    if (Piece)
-                    {
-                        // Kill the piece on this tile
-                        Destroy(Piece.gameObject);
-                    }
 
                     // Move the selected piece here
+                    board.selectedTile.Piece.moveToTile(this);
+
+                    /*
                     Piece = board.selectedTile.Piece;
                     board.selectedTile.Piece = null;
                     Piece.Tile = this;
+                    */
 
                     // Invoke end of turn (deselect / unhighlight all)
                     game.endTurn();
