@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class PawnTargeter : Targeter
 {
+    public override HashSet<Vector2Int> GetMoves(int piece_row, int piece_col, Tile[,] tiles, bool hasMoved)
+    {
+        return GetTargets(piece_row, piece_col, tiles, hasMoved);
+    }
     public override HashSet<Vector2Int> GetTargets(int piece_row, int piece_col, Tile[,] tiles, bool hasMoved)
     {
 
@@ -15,7 +19,7 @@ public class PawnTargeter : Targeter
         if (tiles[piece_row, piece_col].Piece == null) Debug.Log($"tiles[{piece_row},{piece_col}].Piece is null");
 
         // Direction is up if player one, down if player 2
-        int dir = tiles[piece_row, piece_col].Piece.belongsToPlayerOne() ? 1 : -1;
+        int dir = tiles[piece_row, piece_col].Piece.BelongsToPlayerOne() ? 1 : -1;
 
         HashSet<Vector2Int> targets = new HashSet<Vector2Int>();
         Vector2Int[] directions = new Vector2Int[2]

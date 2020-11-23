@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class QueenTargeter : Targeter
 {
+    public override HashSet<Vector2Int> GetMoves(int piece_row, int piece_col, Tile[,] tiles, bool hasMoved)
+    {
+        return GetTargets(piece_row, piece_col, tiles, hasMoved);
+    }
 
     public override HashSet<Vector2Int> GetTargets(int piece_row, int piece_col, Tile[,] tiles, bool hasMoved)
     {

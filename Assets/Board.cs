@@ -123,7 +123,7 @@ public class Board : MonoBehaviour {
         selectedTile = piece.tile;
 
         // Get the next array of targets
-        HashSet<Vector2Int> targets = piece.GetTargets();
+        HashSet<Vector2Int> targets = piece.GetMoves();
 
         //Highlight the next wave of targets
         foreach (Vector2Int target in targets)
@@ -152,8 +152,11 @@ public class Board : MonoBehaviour {
      */
     public bool CheckEndOfTurnConditions(Team attackingTeam)
     {
-        Piece king = attackingTeam == Team.WHITE ? blackKing : whiteKing;
-        bool check = CheckForCheck(attackingTeam, king.tile.row, king.tile.col);
+
+        Debug.Log("Checking end of turn conditions");
+
+        Piece king = (attackingTeam == Team.WHITE) ? blackKing : whiteKing;
+        bool check = king.IsChecked();
 
         if (check)
         {
@@ -194,16 +197,10 @@ public class Board : MonoBehaviour {
                 defender.simulateMove(tiles[move.y, move.x]);
 
                 // If this move isn't check, we've found a valid non-check move! return true
-                if (!CheckForCheck(attackingTeam, king.tile.row, king.tile.col))
+                if (!king.IsChecked())
                 {
                     // Move back to original position
                     defender.rewindSimulatedMove();
-
-                    /*
-                    defender.tile.Piece = null;
-                    defender.tile = tiles[orig_r, orig_c];
-                    defender.tile.Piece = defender;
-                    */
 
                     return true;
                 }
@@ -211,13 +208,6 @@ public class Board : MonoBehaviour {
                 // Move back to original position   
                 defender.rewindSimulatedMove();
             }
-
-
-            /*
-            defender.tile.Piece = null;
-            defender.tile = tiles[orig_r, orig_c];
-            defender.tile.Piece = defender;
-            */
         }
 
         // We found no non-check moves. Return false
@@ -225,6 +215,7 @@ public class Board : MonoBehaviour {
     }
 
     // Returns true if check
+    /*
     private bool CheckForCheck(Team attackingTeam, int king_r, int king_c)
     {
 
@@ -240,6 +231,7 @@ public class Board : MonoBehaviour {
 
         return false;
     }
+    */
     public void CalculateThreatened(List<Piece> attackers)
     {
         threatened.Clear();

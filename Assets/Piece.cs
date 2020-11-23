@@ -14,22 +14,22 @@ public class Piece : MonoBehaviour
 
     public string type;
 
-    public Tile Tile
-    {
-        get
-        {
-            return tile;
-        }
-        set
-        {
-            tile = value;
-        }
-    }
-
     public Team team;
 
     public void moveToTile(Tile moveTarget)
     {
+
+        // Castling
+        if(type == "King" && moveTarget.Piece && moveTarget.Piece.type == "Rook" && team == moveTarget.Piece.team)
+        {
+            int kingCol = tile.col;
+            int rookCol = moveTarget.Piece.tile.col;
+            int kingDir = (rookCol - kingCol) / System.Math.Abs(rookCol - kingCol);
+            moveTarget.Piece.moveToTile(tile.board.tiles[tile.row, rookCol + (kingDir == 1 ? -2 : 3)]);
+            moveToTile(tile.board.tiles[tile.row, kingCol + 2*kingDir]);
+            return;
+        }
+
         if(tile) Debug.Log($"Moving {team} {type} at r{tile.row} c{tile.col} to r{moveTarget.row} c{moveTarget.col}");
         
         if (moveTarget.Piece)
@@ -119,8 +119,14 @@ public class Piece : MonoBehaviour
 
     }
 
+    public bool IsChecked()
+    {
+        Debug.Log($"Checking if {team} {type} is checked");
+        Team attackingTeam = team == Team.WHITE ? Team.BLACK : Team.WHITE;
+        return tile.IsChecked(attackingTeam);
+    }
 
-    public bool belongsToPlayerOne()
+    public bool BelongsToPlayerOne()
     {
         return tile.game.playerOneTeam == team;
     }
@@ -128,6 +134,10 @@ public class Piece : MonoBehaviour
     public HashSet<Vector2Int> GetTargets()
     {
         return targeter.GetTargets(tile.row, tile.col, tile.board.tiles, hasMoved);
+    }
+    public HashSet<Vector2Int> GetMoves()
+    {
+        return targeter.GetMoves(tile.row, tile.col, tile.board.tiles, hasMoved);
     }
 
     private void Awake()

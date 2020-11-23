@@ -57,6 +57,24 @@ public class Tile : MonoBehaviour
             piece = value;
         }
     }
+
+    public bool IsChecked(Team attackingTeam)
+    {
+
+        Debug.Log($"Checking position {row}, {col} for check");
+
+        board.CalculateThreatened(attackingTeam == Team.WHITE ? board.whitePieces : board.blackPieces);
+
+
+        if (board.threatened.Contains(new Vector2Int(col, row)))
+        {
+            Debug.Log($"{row}, {col} Check");
+            return true;
+        }
+
+        Debug.Log($"{row}, {col} Safe");
+        return false;
+    }
     void OnMouseDown()
     {
         switch(game.state)
@@ -70,24 +88,19 @@ public class Tile : MonoBehaviour
                 break;
             case GameState.HIGHLIGHT_MOVES:
 
-                if (Piece && Piece.team == game.currentTeam)
+                // Check if targeted first, so castling works (when friendly rook targeted)
+                if(State == TileState.TARGETED)
                 {
-                    board.HighlightTiles(Piece);
-                }
-                else if(State == TileState.TARGETED)
-                {
-
                     // Move the selected piece here
                     board.selectedTile.Piece.moveToTile(this);
 
-                    /*
-                    Piece = board.selectedTile.Piece;
-                    board.selectedTile.Piece = null;
-                    Piece.Tile = this;
-                    */
 
                     // Invoke end of turn (deselect / unhighlight all)
                     game.endTurn();
+                }
+                else if (Piece && Piece.team == game.currentTeam)
+                {
+                    board.HighlightTiles(Piece);
                 }
                 break;
         }
